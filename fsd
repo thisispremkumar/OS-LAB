@@ -1,0 +1,97 @@
+const { MongoClient, ObjectId } = require("mongodb");
+
+// I've corrected the URI by removing the < and > around your password
+const uri = "mongodb+srv://premmokra143_db_user:Premkumar12$@cluster0.ui0h6c0.mongodb.net/";
+const client = new MongoClient(uri);
+
+async function main() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB Atlas");
+
+    const db = client.db("companyDB");
+    const employees = db.collection("employees");
+
+    // Start with a clean slate for this example
+    await employees.deleteMany({});
+    console.log("Cleaned old employees");
+
+    // --- 1. CREATE (Many) ---
+    console.log("\n--- CREATE (insertMany) ---");
+    const insertManyResult = await employees.insertMany([
+      { name: "Bob Smith", age: 45, department: "Sales", salary: 70000, status: "Active" },
+      { name: "Charlie Brown", age: 28, department: "IT", salary: 80000, status: "Active" },
+      { name: "Diana Prince", age: 34, department: "HR", salary: 65000, status: "Active" },
+      { name: "Eve Polastri", age: 42, department: "IT", salary: 95000, status: "On-Leave" }
+    ]);
+    console.log(` Inserted ${insertManyResult.insertedCount} documents.`);
+
+
+    // --- 2. READ (FindOne, Filter, Sort, Limit, Projection) ---
+
+    console.log("\n--- READ (findOne) ---");
+    // Find the *first* document that matches the filter
+    const oneITEmployee = await employees.findOne({ department: "IT" });
+    console.log("First IT Employee:", oneITEmployee);
+
+    console.log("\n--- READ (Find with Filter, Sort, Limit) ---");
+    // Filter: Find all IT employees who are "Active"
+    // Sort: Show the youngest first (age: 1)
+    // Limit: Only show the top 2
+    const query = {
+      department: "IT",
+      status: "Active"
+    };
+    const options = {
+      sort: { age: 1 }, // 1 for ascending, -1 for descending
+      limit: 2
+    };
+
+    const activeIT = await employees.find(query, options).toArray();
+    console.log("Active IT Employees (youngest first):", activeIT);
+
+    console.log("\n--- READ (Find with Projection) ---");
+    // Get *all* employees, but only show their 'name' and 'department'
+    // _id is included by default, so we explicitly exclude it (_id: 0)
+    const directory = await employees.find()
+                                     .project({ name: 1, department: 1, _id: 0 })
+                                     .toArray();
+    console.log("Employee Directory:", directory);
+
+
+    // --- 3. UPDATE (UpdateMany & $inc) ---
+    console.log("\n--- UPDATE (updateMany & $inc) ---");
+    // Give *everyone* in the 'IT' department a 5000 salary increase
+    const updateManyResult = await employees.updateMany(
+      { department: "IT" },
+      { $inc: { salary: 5000 } } // $inc operator increments a field
+    );
+    console.log(` Updated ${updateManyResult.modifiedCount} IT employees.`);
+
+    // Check the result
+    const updatedITEmployees = await employees.find({ department: "IT" }).toArray();
+    console.log("IT Salaries after raise:", updatedITEmployees);
+
+
+    // --- 4. DELETE (DeleteMany) ---
+    console.log("\n--- DELETE (deleteMany) ---");
+    // Delete all employees who are 'On-Leave'
+    const deleteManyResult = await employees.deleteMany({ status: "On-Leave" });
+    console.log(` Deleted ${deleteManyResult.deletedCount} on-leave employees.`);
+
+
+    // Final check
+    console.log("\n--- FINAL LIST ---");
+    const allEmployees = await employees.find().toArray();
+    console.log(allEmployees);
+
+  } catch (error) {
+    console.error(" Error:", error);
+  } finally {
+    await client.close();
+    console.log("\n Connection closed");
+  }
+}
+
+// Don't forget to call the function!
+main().catch(console.error);
