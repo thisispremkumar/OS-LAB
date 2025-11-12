@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+const express = require('express');
+const session = require('express-session');
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-function Counter() {
-  //State hook creates a 'count' variable and a function 'setCount' to update it
-  const [count, setCount] = useState(0);
+app.use(session({
+    secret: 'mySecret',
+    resave: false,
+    saveUninitialized: true,
+}));
 
-  return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Counter Example using Hooks</h2>
-      <p>Current count: {count}</p>
-      <button onClick={() => setCount(count + 1)}>
-        Increase
-      </button>
-    </div>
-  );
-}
+app.get('/', (req, res) => {
+    if (req.session.views) {
+        req.session.views++;
+        res.send(`<h1>Welcome back! You have visited this page ${req.session.views} times.</h1>`);
+    } else {
+        req.session.views = 1;
+        res.send('<h1>Welcome to the site! This is your first visit.</h1>');
+    }
+});
 
-export default Counter;
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
