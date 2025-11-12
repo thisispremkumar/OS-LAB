@@ -1,0 +1,33 @@
+import React, { useState } from "react";
+
+function App() {
+  const [show, setShow] = useState(true);
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>React Conditional Rendering</h1>
+
+      {/* CONDITIONAL RENDERING: EXAMPLE 1
+        This is a ternary operator.
+        - IF 'show' is true, it renders the <h2>...</h2>
+        - ELSE, it renders the <p>...</p>
+      */}
+      {show ? (
+        <h2>Hello, welcome to React!</h2>
+      ) : (
+        <p>Goodbye!</p>
+      )}
+
+      {/* This button toggles the 'show' state from true to false, or false to true */}
+      <button onClick={() => setShow(!show)}>
+        {/* CONDITIONAL RENDERING: EXAMPLE 2
+          The text inside the button also changes
+          based on the 'show' state.
+        */}
+        {show ? "Hide Message" : "Show Message"}
+      </button>
+    </div>
+  );
+}
+
+export default App;
