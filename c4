@@ -1,0 +1,112 @@
+#include <stdio.h> // Required for printf() and scanf()
+
+#define MAX 100      // Maximum number of vertices
+#define INFINITY 9999 // A large number to represent no direct path
+
+/**
+ * @brief Finds the shortest distances from a start vertex to all other vertices
+ * using Dijkstra's algorithm.
+ * @param n Number of vertices in the graph.
+ * @param graph The adjacency matrix representing the graph's weights.
+ * @param start The starting vertex (node) index (0 to n-1).
+ */
+void dijkstra(int n, int graph[MAX][MAX], int start) {
+    int distance[MAX]; // Stores the shortest distance from 'start' to 'i'
+    int visited[MAX];  // Keeps track of visited nodes (1 if visited, 0 if not)
+    int i, j, count, min_dist, next_node;
+
+    // 1. Initialization
+    for (i = 0; i < n; i++) {
+        distance[i] = graph[start][i]; // Initial distance is the direct edge from start
+        visited[i] = 0;                // No node has been visited yet
+    }
+
+    // Distance from the start node to itself is always 0
+    distance[start] = 0;
+    // Mark the start node as visited
+    visited[start] = 1;
+    count = 1; // We have visited 1 node so far
+
+    // 2. Main loop: Find paths until all nodes are visited
+    while (count < n) {
+        min_dist = INFINITY;
+        next_node = -1;
+
+        // 3. Find the *next* unvisited node with the smallest distance
+        for (i = 0; i < n; i++) {
+            if (!visited[i] && distance[i] < min_dist) {
+                min_dist = distance[i];
+                next_node = i;
+            }
+        }
+
+        // If next_node is -1, it means remaining nodes are unreachable
+        if (next_node == -1) {
+            break;
+        }
+
+        // Mark the chosen node as visited
+        visited[next_node] = 1;
+
+        // 4. Update the distances of all *neighbors* of the chosen node
+        for (i = 0; i < n; i++) {
+            // Check if:
+            // 1. The neighbor 'i' has not been visited
+            // 2. A path exists from next_node to 'i'
+            // 3. The path through next_node is shorter than the current known distance[i]
+            if (!visited[i] && graph[next_node][i] != INFINITY &&
+                distance[next_node] + graph[next_node][i] < distance[i]) {
+                // Update to the new, shorter distance
+                distance[i] = distance[next_node] + graph[next_node][i];
+            }
+        }
+        count++; // Increment the count of visited nodes
+    }
+
+    // 5. Print the final shortest distances
+    printf("\nShortest distances from source vertex %d:\n", start);
+    for (i = 0; i < n; i++) {
+        if (distance[i] == INFINITY) {
+            printf("To vertex %d : No Path\n", i);
+        } else {
+            printf("To vertex %d : %d\n", i, distance[i]);
+        }
+    }
+}
+
+int main() {
+    int n, graph[MAX][MAX], i, j, start;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    // Basic input validation
+    if (n <= 0 || n > MAX) {
+        printf("Invalid number of vertices. Must be between 1 and %d.\n", MAX);
+        return 1; // Exit with an error
+    }
+
+    printf("Enter the adjacency matrix (use %d for infinity/no edge):\n", INFINITY);
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) { // <-- FIXED: Was j < j, now j < n
+            scanf("%d", &graph[i][j]);
+            // Ensure distance to self is 0, even if user enters INFINITY
+            if (i == j) {
+                graph[i][j] = 0;
+            }
+        }
+    }
+
+    printf("Enter the source vertex (0 to %d): ", n - 1);
+    scanf("%d", &start);
+
+    // Basic input validation
+    if (start < 0 || start >= n) {
+        printf("Invalid start vertex. Must be between 0 and %d.\n", n - 1);
+        return 1; // Exit with an error
+    }
+
+    dijkstra(n, graph, start);
+
+    return 0; // Successful execution
+}
