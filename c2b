@@ -1,0 +1,36 @@
+#include <stdio.h>
+int main() {
+ int bucket_capacity, output_rate, n, i;
+ int input_packets[50], current_bucket = 0;
+ printf("Enter bucket capacity: ");
+ scanf("%d", &bucket_capacity);
+ printf("Enter output rate: ");
+ scanf("%d", &output_rate);
+ printf("Enter number of time intervals: ");
+ scanf("%d", &n);
+ printf("Enter number of packets arriving at each interval:\n");
+ for(i = 0; i < n; i++) {
+ scanf("%d", &input_packets[i]);
+ }
+ printf("\nTime\tPackets Incoming\tPackets Sent\tPackets Left\tPackets Dropped\n");
+ for(i = 0; i < n; i++) {
+ printf("%d\t\t%d\t\t", i+1, input_packets[i]);
+ 
+ // Add incoming packets to bucket first
+ current_bucket += input_packets[i];
+ 
+ // Check for overflow and drop excess packets
+ int dropped = 0;
+ if(current_bucket > bucket_capacity) {
+ dropped = current_bucket - bucket_capacity;
+ current_bucket = bucket_capacity;
+ }
+ 
+ // Send packets at constant output rate (leaky bucket drains)
+ int packets_sent = (current_bucket >= output_rate) ? output_rate : current_bucket;
+ current_bucket -= packets_sent;
+ 
+ printf("%d\t\t%d\t\t%d\n", packets_sent, current_bucket, dropped);
+ }
+ return 0;
+}
