@@ -1,0 +1,19 @@
+import 'package:flutter/material.dart';
+void main()=>runApp(MaterialApp(debugShowCheckedModeBanner:false,
+theme:ThemeData(textTheme:TextTheme(titleMedium:TextStyle(fontSize:20,color:Colors.white))),
+home:Home()));
+
+class Home extends StatelessWidget{
+Widget build(c)=>Scaffold(appBar:AppBar(title:Text("Theme Demo")),body:Center(
+child:Column(mainAxisAlignment:MainAxisAlignment.center,children:[
+for(var b in[["Login",Icons.login],["Sign Up",Icons.person_add],["Settings",Icons.settings]])
+GestureDetector(
+onTap:()=>ScaffoldMessenger.of(c).showSnackBar(SnackBar(content:Text("${b[0]} Clicked"))),
+child:Container(margin:EdgeInsets.all(10),padding:EdgeInsets.all(14),width:220,
+decoration:BoxDecoration(gradient:LinearGradient(colors:[Colors.teal,Colors.green]),
+borderRadius:BorderRadius.circular(15)),
+child:Row(mainAxisSize:MainAxisSize.min,children:[
+Icon(b[1] as IconData,color:Colors.white),SizedBox(width:8),
+Text(b[0],style:Theme.of(c).textTheme.titleMedium)
+]))),
+])));}
