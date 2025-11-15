@@ -1,0 +1,26 @@
+for(int i = 0; i < 7; i++)
+ printf("%d ", hcode[i]);
+ printf("\n");
+ // Optionally simulate an error
+ char opt;
+ printf("Simulate error? (y/n): ");
+ scanf(" %c", &opt);
+ if(opt == 'y' || opt == 'Y') {
+ int pos;
+ printf("Enter bit position to flip (1-7): ");
+ scanf("%d", &pos);
+ if(pos >= 1 && pos <=7) {
+ hcode[pos-1] ^= 1;
+ printf("Codeword after error: ");
+ for(int i = 0; i < 7; i++)
+ printf("%d ", hcode[i]);
+ printf("\n");
+ }
+ }
+ // Decode: error detection and correction
+ int p[3];
+ // parity checks: P1 (positions 0,2,4,6), P2 (1,2,5,6), P4 (3,4,5,6)
+ p[0] = hcode[0] ^ hcode[2] ^ hcode[4] ^ hcode[6];
+ p[1] = hcode[1] ^ hcode[2] ^ hcode[5] ^ hcode[6];
+ p[2] = hcode[3] ^ hcode[4] ^ hcode[5] ^ hcode[6];
+ int error_pos = p[2]*4 + p[1]*2 + p[0]*1; // binary to decimal
