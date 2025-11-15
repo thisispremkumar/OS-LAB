@@ -1,0 +1,43 @@
+Experiment-13
+Wireshark
+i. Packet Capture Using Wire shark 
+ii. Starting Wire shark 
+iii. Viewing Captured Traffic 
+iv. Analysis and Statistics & Filters.
+i. Packet Capture Using Wireshark
+Wireshark is a network packet analyzer used to capture live traffic on a computer network.
+● Launch Wireshark and identify active network interfaces such as Ethernet or Wi-
+Fi from the home screen.
+● Select the interface showing live traffic and click Start Capturing Packets (icon of a 
+blue shark fin) or press Ctrl + E to begin capture.
+● Wireshark collects frames and displays them in real time as a list in the Packet List 
+Pane.
+ii. Starting Wireshark
+● Open Wireshark via Start Menu or Terminal.
+● Choose your network interface card (NIC) that carries internet traffic (for example, Wi-
+Fi 3 or eth0).
+● Click on Capture → Start, or use the keyboard shortcut Ctrl + E to begin recording 
+packets.
+● Let it run briefly and then click Capture → Stop to finish.
+● Save your capture as .pcap file for further analysis.
+iii. Viewing Captured Traffic
+The Wireshark main window has three panes for inspecting packets:
+1. Packet List Pane – Displays each captured packet with details such as number, time, 
+source, destination, protocol, and length.
+2. Packet Details Pane – Shows the hierarchical structure of selected packet protocols 
+(Ethernet, IP, TCP, HTTP, etc.).
+3. Packet Bytes Pane – Displays raw data (in hexadecimal or ASCII) of the selected packet 
+for low-level analysis.
+Clicking on any packet updates the other panes instantly, providing detail down to field-level 
+structure in network headers.
+iv. Analysis and Statistics & Filters
+Wireshark provides analytical tools and filtering options for traffic examination:
+● Display Filters limit visible packets using syntax like ip.addr == 192.168.1.5, http, 
+or tcp.port == 80.
+● Statistics Menu includes features:
+● Protocol Hierarchy: shows proportion of Ethernet, IP, TCP, and application-
+layer traffic.
+● Conversations: lists communication pairs between devices.
+● IO Graphs: visualizes traffic volume over time.
+● Follow TCP Stream reconstructs full client-server communication for one session.
+● Expert Info highlights retransmissions, delays, or malformed packets.
